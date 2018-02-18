@@ -1,13 +1,13 @@
 <div *ngIf="currentAllo">
   <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+    <button class="btn my-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
       {{ currentAllo.name }}
     </button>
     <br><br/>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <div *ngFor="let allo of allos">
-        <a class="dropdown-item pointer" (click)="alloChange(allo.id)">{{ allo.name }}</a>
+      <div *ngFor="let allo of allos | async">
+        <a class="dropdown-item pointer" (click)="alloChange(allo.key)">{{ allo.name }}</a>
       </div>
     </div>
   </div>
@@ -19,35 +19,20 @@
       </div>
     </div>
     <form (ngSubmit)="register(orderForm.value)" #orderForm="ngForm">
-      <div *ngIf="currentAllo.hasQuantity === 1" class="form-group">
+      <div *ngIf="currentAllo.isCountable === true" class="form-group">
         <label class="text-white" for="quantity">Quantité</label>
-        <input name="quantity" type="number" class="form-control" id="quantity" required  ngModel>
-      </div>
-      <div *ngIf="currentAllo.hasSpec === 1 && currentSpec">
-        <label class="text-white">{{ currentAllo.specName }}</label>
-        <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle specification" type="button" id="dropdownSpec" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-            {{ currentSpec.name }}
-          </button>
-          <br/><br/>
-          <div class="dropdown-menu" aria-labelledby="dropdownSpec">
-            <div *ngFor="let spec of specs">
-              <a class="dropdown-item pointer" (click)="specChange(spec.id)">{{ spec.name }}</a>
-            </div>
-          </div>
-        </div>
+        <input name="quantity" type="number" class="form-control" id="quantity" required ngModel>
       </div>
       <div class="form-group">
-        <label class="text-white" for="name">Nom - Prenom</label>
-        <input name="name" type="text" class="form-control" id="name" required ngModel>
+        <label class="text-white" for="owner">Nom - Prenom</label>
+        <input name="owner" type="text" class="form-control" id="owner" required ngModel>
       </div>
       <div class="form-group">
-        <label class="text-white" for="address">Chambre/Adresse</label>
-        <input name="address" type="text" class="form-control" id="address" required ngModel>
+        <label class="text-white" for="comment">Commentaire</label>
+        <input name="comment" type="text" class="form-control" id="comment" required ngModel>
       </div>
       <div class="col-12 text-center">
-        <button class="btn btn-primary">Valider</button>
+        <button class="btn my-primary">Valider</button>
       </div>
     </form>
   </div>

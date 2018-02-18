@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import {AllosService} from "../../services/allos.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-allos',
@@ -9,7 +10,7 @@ import {AllosService} from "../../services/allos.service";
 })
 export class AllosComponent implements OnInit {
 
-  allos;
+  allos: Observable<any[]>;
 
   constructor(private allosService: AllosService) { }
 
@@ -20,16 +21,12 @@ export class AllosComponent implements OnInit {
 
   private refreshData(): void {
 
-    this.allosService.getAllAllos().subscribe((data) => {
-      this.allos = data;
-    });
+    this.allos = this.allosService.getAllAllos();
   }
 
-  updateAllo(id,state) {
+  updateAllo(id, state) {
     state = !state;
-    this.allosService.postUpdateAllo(id,state).subscribe(res => {
-      this.refreshData();
-    });
+    this.allosService.postUpdateAllo(id,state)
   }
 
 }

@@ -1,30 +1,39 @@
 import { Injectable } from '@angular/core';
 
-import { ApiService } from "./api.service";
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class OrdersService {
 
-  constructor(private apiService: ApiService  ) {
+  constructor(private db: AngularFireDatabase) {
   }
 
-  getAllOrders() {
-    return this.apiService.get("/all-orders");
+  getAllOrders(): Observable<any[]> {
+    return this.db.list('Orders/').snapshotChanges().map(changes => {
+      return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+    });
   }
 
-  getOrdersNotFinish() {
-    return this.apiService.get("/orders-not-finish");
+  getOrdersNotFinish(): Observable<any[]> {
+    return this.db.list('Orders/', ref => ref.orderByChild('isDelivered').equalTo(false))
+      .snapshotChanges().map(changes => {
+        return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+      });
   }
 
-  getOrdersNotFinishForAlloId(alloId) {
-    return this.apiService.get("/orders-not-finish/"+alloId);
+  getOrdersNotFinishForAlloId(alloName): Observable<any[]> {
+    return this.db.list('Orders/', ref => ref.orderByChild('name').equalTo(alloName))
+      .snapshotChanges().map(changes => {
+        return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+      });
   }
 
   postRemoveOrder(id) {
-    return this.apiService.post("/remove/"+id,{})
+    return this.db.object('Orders/' + id).update({ isDelivered: true})
   }
 
-  postOrder(order,alloId,specName) {
+  postOrder(order, alloName): Observable<{}> {
 
     let quantity: number;
 
@@ -36,17 +45,21 @@ export class OrdersService {
     }
 
     let newOrder = {
-      name: order.name,
-      address: order.address,
-      alloId: alloId,
-      quantity: quantity,
-      specification: specName
+      comment: order.comment,
+      date: Date.now(),
+      isDelivered: false,
+      isInProgress: false,
+      name: alloName,
+      owner: order.owner,
+      quantity: quantity
     };
 
-    return this.apiService.post("/add-order/",{"order": newOrder})
+    let adKey = this.db.list('Orders/').push(newOrder).key;
+
+    return this.db.object('Orders/' + adKey).valueChanges();
   }
 
   postUpdateOrder(id,state) {
-    return this.apiService.post("/update-in-progress/"+id,{"state":state})
+    return this.db.object('Orders/' + id).update({ isInProgress: state})
   }
 }

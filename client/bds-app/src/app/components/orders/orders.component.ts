@@ -6,6 +6,7 @@ import 'rxjs/add/observable/timer';
 import { OrdersService } from '../../services/orders.service';
 import {AllosService} from "../../services/allos.service";
 import {Observable} from "rxjs/Observable";
+import * as _ from 'lodash';
 import {AnonymousSubscription} from "rxjs/Subscription";
 
 
@@ -16,55 +17,47 @@ import {AnonymousSubscription} from "rxjs/Subscription";
 })
 export class OrdersComponent implements OnInit {
 
-  orders;
-  allos;
+  orders: any[];
+  allos: Observable<any[]>;
   allSelected = true;
-  currentAlloId: number;
   currentAlloName: string;
 
-  private timerSubscription: AnonymousSubscription;
+  private filterSubscription: AnonymousSubscription;
+  private allSubscription: AnonymousSubscription;
 
   constructor(private ordersService: OrdersService, private allosService: AllosService) {
   }
 
   public ngOnInit(): void {
 
-    this.allosService.getActiveAllos().subscribe((data) => {
-      this.allos = data;
-      this.currentAlloId = this.allos[0].id;
-      this.currentAlloName = "Toutes";
-      this.refreshData(this.currentAlloId);
-    });
+    this.allos = this.allosService.getActiveAllos();
+    this.currentAlloName = "Toutes";
+    this.refreshData(this.currentAlloName);
   }
 
   public ngOnDestroy(): void {
 
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
+
+    if (this.allSubscription) {
+      this.allSubscription.unsubscribe();
     }
   }
 
-  private subscribeToData(): void {
-
-    this.timerSubscription = Observable.timer(8000)
-      .subscribe(() => this.refreshData(this.currentAlloId));
-  }
-
-  private refreshData(alloId): void {
+  private refreshData(alloName): void {
 
     if (!this.allSelected) {
-      this.ordersService.getOrdersNotFinishForAlloId(alloId).subscribe((data) => {
-
-        this.orders = data;
-        this.subscribeToData();
-
+      this.filterSubscription = this.ordersService.getOrdersNotFinishForAlloId(alloName).subscribe((data) => {
+        let filters = {};
+        filters['isDelivered'] = val => val == false;
+        this.orders = _.filter(data, _.conforms(filters) )
       });
+
     } else {
-      this.ordersService.getOrdersNotFinish().subscribe((data) => {
-
-        this.orders = data;
-        this.subscribeToData();
-
+      this.allSubscription = this.ordersService.getOrdersNotFinish().subscribe((data) => {
+        this.orders = data
       });
     }
 
@@ -72,29 +65,30 @@ export class OrdersComponent implements OnInit {
 
   removeOrder(id) {
 
-    this.ordersService.postRemoveOrder(id).subscribe(res => {
-      this.refreshData(this.currentAlloId);
-    });
+    this.ordersService.postRemoveOrder(id)
   }
 
   updateOrder(id,state) {
     state = !state;
-    this.ordersService.postUpdateOrder(id,state).subscribe(res => {
-      this.refreshData(this.currentAlloId);
-    });
+    this.ordersService.postUpdateOrder(id,state)
   }
 
   allOrders() {
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
     this.allSelected = true;
     this.currentAlloName = "Toutes";
-    this.refreshData(this.currentAlloId);
+    this.refreshData(this.currentAlloName);
   }
 
-  alloChange(id,name) {
+  alloChange(name) {
+    if (this.allSubscription) {
+      this.allSubscription.unsubscribe();
+    }
     this.allSelected = false;
-    this.currentAlloId = id;
     this.currentAlloName = name;
-    this.refreshData(this.currentAlloId);
+    this.refreshData(this.currentAlloName);
   }
 
 }

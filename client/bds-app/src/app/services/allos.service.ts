@@ -1,26 +1,33 @@
 import { Injectable } from '@angular/core';
 
-import { ApiService } from "./api.service";
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class AllosService {
 
-  constructor(private apiService: ApiService) {
+  constructor(private db: AngularFireDatabase) {
   }
 
-  getAllAllos() {
-    return this.apiService.get("/all-allo");
+  getAllAllos(): Observable<any[]> {
+    return this.db.list('Allos/').snapshotChanges().map(changes => {
+      return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+    });
   }
 
-  getActiveAllos() {
-    return this.apiService.get("/allo-active");
+  getActiveAllos(): Observable<any[]> {
+
+    return this.db.list('Allos/', ref => ref.orderByChild('isActive').equalTo(true))
+      .snapshotChanges().map(changes => {
+        return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+    });
   }
 
-  getAlloForId(id) {
-    return this.apiService.get("/allo/"+id);
+  getAlloForId(id): Observable<{}> {
+    return this.db.object('Allos/' + id).valueChanges()
   }
 
-  postUpdateAllo(id,state) {
-    return this.apiService.post("/update-active-allo/"+id,{"state":state})
+  postUpdateAllo(id, state) {
+    return this.db.object('Allos/' + id).update({ isActive: state})
   }
 }

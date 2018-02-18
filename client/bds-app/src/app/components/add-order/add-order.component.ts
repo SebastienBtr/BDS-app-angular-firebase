@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {AllosService} from "../../services/allos.service";
 import {OrdersService} from "../../services/orders.service";
-import {SpecificationsService} from "../../services/specifications.service";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
+import {AnonymousSubscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'app-add-order',
@@ -11,40 +12,40 @@ import {Router} from "@angular/router";
 })
 export class AddOrderComponent implements OnInit {
 
-  allos;
-  specs;
-  currentSpec;
+  allos: Observable<any[]>;
   currentAllo;
-  errorMessage;
+  errorMessage: String;
 
-  constructor(private ordersService: OrdersService, private allosService: AllosService,
-              private specificationService: SpecificationsService, private router: Router) {
+  private alloSubscription: AnonymousSubscription;
+  private postOrderSubscription: AnonymousSubscription;
+
+  constructor(private ordersService: OrdersService, private allosService: AllosService, private router: Router) {
   }
 
   ngOnInit() {
+    this.allos = this.allosService.getActiveAllos();
 
-    this.allosService.getActiveAllos().subscribe((data) => {
-      this.allos = data;
-      this.currentAllo = this.allos[0];
-
-      if (this.currentAllo.hasSpec === 1) {
-        this.specificationService.getSpecsForAlloId(this.currentAllo.id).subscribe((data) => {
-          this.specs = data;
-          this.currentSpec = this.specs[0];
-        });
-      }
+    this.alloSubscription = this.allosService.getActiveAllos().subscribe((data) => {
+      this.currentAllo = data[0];
     });
+  }
+
+  public ngOnDestroy(): void {
+
+    if (this.alloSubscription) {
+      this.alloSubscription.unsubscribe();
+    }
+
+    if (this.postOrderSubscription) {
+      this.postOrderSubscription.unsubscribe();
+    }
   }
 
   register(order) {
 
-    let specName = "";
-    if (this.currentAllo.hasSpec && this.currentSpec != null) {
-      specName = this.currentSpec.name;
-    }
-
     if (this.valideForm(order)) {
-      this.ordersService.postOrder(order,this.currentAllo.id,specName).subscribe( () => {
+      this.postOrderSubscription = this.ordersService.postOrder(order,this.currentAllo.name)
+        .subscribe( () => {
 
         this.router.navigate(['/orders']);
       });
@@ -54,7 +55,7 @@ export class AddOrderComponent implements OnInit {
 
   private valideForm(order) {
 
-    if (this.currentAllo.hasQuantity) {
+    if (this.currentAllo.isCountable) {
 
       if (order.quantity == "") {
         this.errorMessage = "quantity is require";
@@ -69,20 +70,22 @@ export class AddOrderComponent implements OnInit {
         return false;
       }
 
-    } else if (order.name == "") {
+    }
+
+    if (order.owner == "") {
       this.errorMessage = "name is require";
       return false;
 
-    } else  if (order.name.length > 30) {
+    } else  if (order.owner.length > 30) {
       this.errorMessage = "name too long";
       return false;
 
-    } else if (order.address == "") {
-      this.errorMessage = "address is require";
+    } else if (order.comment == "") {
+      this.errorMessage = "comment is require";
       return false;
 
-    } else if (order.address.length > 60) {
-      this.errorMessage = "address too long";
+    } else if (order.comment.length > 130) {
+      this.errorMessage = "comment too long";
       return false;
     }
 
@@ -90,23 +93,11 @@ export class AddOrderComponent implements OnInit {
   }
 
   alloChange(id) {
-    this.allosService.getAlloForId(id).subscribe((data) => {
-      this.currentAllo = data[0];
 
-      if (this.currentAllo.hasSpec === 1) {
-        this.specificationService.getSpecsForAlloId(this.currentAllo.id).subscribe((data) => {
-          this.specs = data;
-          this.currentSpec = this.specs[0];
-        });
-      }
+    this.alloSubscription = this.allosService.getAlloForId(id).subscribe((data) => {
+      this.currentAllo = data;
     });
 
-  }
-
-  specChange(id) {
-    this.specificationService.getSpecWithId(id).subscribe( (data) => {
-      this.currentSpec = data[0];
-    })
   }
 
 }

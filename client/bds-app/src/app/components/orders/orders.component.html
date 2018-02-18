@@ -1,14 +1,14 @@
 <div class="col-12 no-padding">
   <div class="row">
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      <button class="btn my-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
         {{ currentAlloName }}
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item pointer" (click)="allOrders()">Toutes</a>
-        <div *ngFor="let allo of allos">
-          <a class="dropdown-item pointer" (click)="alloChange(allo.id,allo.name)">{{ allo.name }}</a>
+        <div *ngFor="let allo of allos | async">
+          <a class="dropdown-item pointer" (click)="alloChange(allo.name)">{{ allo.name }}</a>
         </div>
       </div>
     </div>
@@ -16,27 +16,27 @@
 
 </div>
 <div class="col-12 no-padding">
-  <div *ngIf="!orders || orders.length > 0; else empty">
+  <div *ngIf="!orders || orders.length > 0; else empty" class="margin-bottom-50">
     <div class="row text-center bg-white order vertical-center" *ngFor="let order of orders">
 
       <div class="col-1">
-        <button class="btn btn-sm btn-checkbox" (click)="updateOrder(order.id,order.inProgress)"
-                [ngStyle]="{'background-color': order.inProgress && '#37B581'}"
+        <button class="btn btn-sm btn-checkbox" (click)="updateOrder(order.key, order.isInProgress)"
+                [ngStyle]="{'background-color': order.isInProgress && '#37B581'}"
                 data-toggle="tooltip" data-placement="bottom" title="En cours">
           <i class="fas fa-check"></i>
         </button>
       </div>
       <div class="col-3">
-        <p *ngIf="!allSelected">{{ order.quantity }} {{ order.specification }}</p>
-        <p *ngIf="allSelected">{{ order.quantity }} {{ order.name }} {{ order.specification }}</p>
+        <p *ngIf="!allSelected">{{ order.quantity }}</p>
+        <p *ngIf="allSelected">{{ order.quantity }} {{ order.name }}</p>
       </div>
       <div class="col-3">
-        <p>{{ order.studentName }}</p>
+        <p>{{ order.owner }}</p>
       </div>
       <div class="col-3">
-        <p>{{ order.addresse }}</p>
+        <p>{{ order.comment }}</p>
       </div>
-      <div class="col-1 " (click)="removeOrder(order.id)" data-toggle="tooltip" data-placement="bottom" title="Supprimer">
+      <div class="col-1 " (click)="removeOrder(order.key)" data-toggle="tooltip" data-placement="bottom" title="Supprimer">
         <i class="far fa-trash-alt red pointer" ></i>
       </div>
 

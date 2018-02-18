@@ -1,27 +1,24 @@
 <div class="col-md-4 offset-md-4 bg-white padding-top-10 card">
-  <div *ngIf="!allos || allos.length > 0; else empty">
-    <div class="row" *ngFor="let allo of allos">
 
-      <div class="col-3">
-        <label class="switch" (click)="updateAllo(allo.id,allo.active)">
-          <input type="checkbox" [attr.checked]="allo.active ? 'checked' : null">
-          <span class="slider round"></span>
-        </label>
-      </div>
-      <div class="col-9">
-        {{ allo.name }}
-      </div>
+  <div class="row" *ngFor="let allo of allos | async ">
 
+    <div class="col-3">
+      <label class="switch" (click)="updateAllo(allo.key, allo.isActive)">
+        <input type="checkbox" [attr.checked]="allo.isActive ? 'checked' : null">
+        <span class="slider round"></span>
+      </label>
     </div>
+    <div class="col-9">
+      {{ allo.name }}
+    </div>
+
   </div>
 
-  <ng-template #empty>
-    <div class="row text-center">
-      <div class="col-8 offset-2 margin-top-20">
-        <h3 class="text-muted"><i class="far fa-frown"></i></h3>
-        <p class="text-muted">Aucun allo</p>
-      </div>
+  <div *ngIf="!allos || (allos | async )?.length <= 0" class="row text-center">
+    <div class="col-8 offset-2 margin-top-20">
+      <h3 class="text-muted"><i class="far fa-frown"></i></h3>
+      <p class="text-muted">Aucun allo</p>
     </div>
-  </ng-template>
+  </div>
 
 </div>
