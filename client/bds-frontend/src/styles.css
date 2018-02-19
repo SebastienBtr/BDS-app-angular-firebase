@@ -26,3 +26,12 @@
 .padding-top-10 {
   padding-top: 10px;
 }
+
+.my-primary {
+  background-color: #F0A8C6;
+  color: white;
+}
+
+.background {
+  background-color: #242B32;
+}

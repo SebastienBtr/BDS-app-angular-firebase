@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { ApiService } from "./api.service";
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class OrdersService {
 
-  constructor(private apiService: ApiService  ) {
+  constructor(private db: AngularFireDatabase) {
   }
 
-  postOrder(order,alloId,specName) {
+  postOrder(order, alloName): Observable<{}> {
 
     let quantity: number;
 
@@ -20,14 +21,18 @@ export class OrdersService {
     }
 
     let newOrder = {
-      name: order.name,
-      address: order.address,
-      alloId: alloId,
-      quantity: quantity,
-      specification: specName
+      comment: order.comment,
+      date: Date.now(),
+      isDelivered: false,
+      isInProgress: false,
+      name: alloName,
+      owner: order.owner,
+      quantity: quantity
     };
 
-    return this.apiService.post("/add-order/",{"order": newOrder})
+    let adKey = this.db.list('Orders/').push(newOrder).key;
+
+    return this.db.object('Orders/' + adKey).valueChanges();
   }
 
 

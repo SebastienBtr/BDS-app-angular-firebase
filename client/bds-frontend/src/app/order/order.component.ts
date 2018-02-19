@@ -5,7 +5,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/timer';
 import {Observable} from "rxjs/Observable";
-import {SpecificationsService} from "../services/specifications.service";
 import {OrdersService} from "../services/orders.service";
 
 @Component({
@@ -15,144 +14,99 @@ import {OrdersService} from "../services/orders.service";
 })
 export class OrderComponent implements OnInit {
 
-  allos;
-  specs;
-  currentSpec;
+  allos: Observable<any[]>;
   currentAllo;
-  warningMessage: string;
   errorMessage: string;
   successMessage: string;
 
-  private timerSubscription: AnonymousSubscription;
+  private alloSubscription: AnonymousSubscription;
+  private postOrderSubscription: AnonymousSubscription;
 
-  constructor(private allosService: AllosService,private ordersService: OrdersService,
-              private specificationService: SpecificationsService) {}
+  constructor(private allosService: AllosService, private ordersService: OrdersService) {}
 
   ngOnInit() {
 
-    this.refreshData();
-  }
-
-  private refreshData(): void {
-
-    this.errorMessage = null;
-    this.successMessage = null;
-
-    this.allosService.getActiveAllos().subscribe((data) => {
-      this.allos = data;
-      this.subscribeToData();
-    });
+    this.allos = this.allosService.getActiveAllos();
   }
 
   public ngOnDestroy(): void {
 
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
+    if (this.alloSubscription) {
+      this.alloSubscription.unsubscribe();
     }
-  }
 
-  private subscribeToData(): void {
-
-    this.timerSubscription = Observable.timer(8000)
-      .subscribe(() => this.refreshData());
+    if (this.postOrderSubscription) {
+      this.postOrderSubscription.unsubscribe();
+    }
   }
 
   chooseAllo(id) {
 
     this.errorMessage = null;
-    this.warningMessage = null;
     this.successMessage = null;
-    this.currentSpec = null;
 
-    this.allosService.getActiveAlloForId(id).subscribe((data) => {
-
-      let resp = data as Array<any>;
-
-      if (resp.length > 0) {
-        this.currentAllo = resp[0];
-
-        if (this.currentAllo.hasSpec === 1) {
-          this.specificationService.getSpecsForAlloId(this.currentAllo.id).subscribe((data) => {
-
-            this.specs = data;
-            this.currentSpec = this.specs[0];
-          });
-        }
-
-        if (this.timerSubscription) {
-          this.timerSubscription.unsubscribe();
-        }
-
-      } else {
-        this.warningMessage = "Désolé le allo sélectionné n'est plus disponible pour le moment"
-      }
+    this.alloSubscription = this.allosService.getAlloForId(id).subscribe((data) => {
+      this.currentAllo = data;
     });
   }
 
   register(order) {
 
-    let specName = "";
-    if (this.currentAllo.hasSpec && this.currentSpec != null) {
-      specName = this.currentSpec.name;
-    }
-
     if (this.valideForm(order)) {
-      this.ordersService.postOrder(order,this.currentAllo.id,specName).subscribe( () => {
+      this.postOrderSubscription = this.ordersService.postOrder(order,this.currentAllo.name)
+        .subscribe( () => {
 
-        this.currentAllo = null;
-        this.currentSpec = null;
-        this.refreshData();
-        this.errorMessage = null;
-        this.warningMessage = null;
-        this.successMessage = "Votre commande a été envoyé avec succès"
-      });
+          if (this.alloSubscription) {
+            this.alloSubscription.unsubscribe();
+          }
 
+          this.currentAllo = null;
+          this.errorMessage = null;
+          this.successMessage = "Votre commande a été envoyé avec succès"
+        });
     }
   }
 
   backToSelection() {
-
     this.currentAllo = null;
-    this.refreshData();
-  }
 
-  specChange(id) {
-    this.specificationService.getSpecWithId(id).subscribe( (data) => {
-      this.currentSpec = data[0];
-    })
+    if (this.alloSubscription) {
+      this.alloSubscription.unsubscribe();
+    }
   }
 
   private valideForm(order) {
 
-    if (this.currentAllo.hasQuantity) {
+    if (this.currentAllo.isCountable) {
 
       if (order.quantity == "") {
         this.errorMessage = "Veuillez saisir une quantité";
         return false;
 
-      }else if (isNaN(order.quantity)) {
+      } else if (isNaN(order.quantity)) {
         this.errorMessage = "La quantité doit être un nombre";
         return false;
 
-      } else if (order.quantity.length > 2) {
+      } else if (order.quantity.toString().length > 2) {
         this.errorMessage = "La quantité est trop grande";
         return false;
       }
+    }
 
-    } else if (order.name == "") {
+    if (order.owner == "") {
       this.errorMessage = "Veuillez saisir un nom";
       return false;
 
-    } else  if (order.name.length > 30) {
+    } else  if (order.owner.toString().length > 30) {
       this.errorMessage = "Le nom saisi est trop long";
       return false;
 
-    } else if (order.address == "") {
-      this.errorMessage = "Veuillez saisir une adresse";
+    } else if (order.comment == "") {
+      this.errorMessage = "Veuillez saisir un commentaire";
       return false;
 
-    } else if (order.address.length > 60) {
-      this.errorMessage = "L'adresse saisie est trop longue";
+    } else if (order.comment.toString().length > 130) {
+      this.errorMessage = "Le commentaire saisie est trop long";
       return false;
     }
 

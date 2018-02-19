@@ -1,11 +1,5 @@
 <div class="col-md-12 margin-top-30">
 
-  <div *ngIf="warningMessage">
-    <div class="alert alert-warning" role="alert">
-      <strong>Warning !</strong> {{errorMessage}}
-    </div>
-  </div>
-
   <div *ngIf="successMessage">
     <div class="alert alert-success" role="alert">
       {{successMessage}}
@@ -13,10 +7,10 @@
   </div>
 
   <div *ngIf="!currentAllo; else selected">
-    <div *ngIf="!allos || allos.length > 0; else empty">
+    <div *ngIf="!allos || (allos | async )?.length > 0; else empty">
       <div class="row">
-        <div class="col-md-3 col-6 margin-top-20" *ngFor="let allo of allos">
-          <div (click)="chooseAllo(allo.id)" class="allo">
+        <div class="col-md-3 col-6 margin-top-20" *ngFor="let allo of allos | async">
+          <div (click)="chooseAllo(allo.key)" class="allo">
             <div class="content">
               <img class="picture" src="assets/images/{{allo.image}}" alt="{{allo.name}} image">
               <p class="titre"><strong>{{ allo.name }}</strong></p>
@@ -27,7 +21,7 @@
     </div>
 
     <ng-template #empty>
-      <div class="row text-center">
+      <div class="row text-center text-white">
         <div class="col-12 margin-top-20">
           <h3 class="text-muted"><i class="far fa-frown"></i></h3>
           <p class="text-muted">Aucun allo disponible pour le moment</p>
@@ -37,7 +31,7 @@
   </div>
 
   <ng-template #selected>
-    <button (click)="backToSelection()" class="btn btn-primary">
+    <button (click)="backToSelection()" class="btn my-primary">
       <i class="fas fa-arrow-left"></i> Retour
     </button>
     <br><br>
@@ -48,35 +42,20 @@
           </div>
         </div>
         <form (ngSubmit)="register(orderForm.value)" #orderForm="ngForm">
-          <div *ngIf="currentAllo.hasQuantity === 1" class="form-group">
-            <label for="quantity">Quantité</label>
+          <div *ngIf="currentAllo.isCountable === true" class="form-group">
+            <label class="text-white" for="quantity">Quantité</label>
             <input name="quantity" type="number" class="form-control" id="quantity" required  ngModel>
           </div>
-          <div *ngIf="currentAllo.hasSpec === 1 && currentSpec">
-            <label>{{ currentAllo.specName }}</label>
-            <div class="dropdown">
-              <button class="btn btn-outline-light dropdown-toggle specification" type="button" id="dropdownSpec" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                {{ currentSpec.name }}
-              </button>
-              <br/><br/>
-              <div class="dropdown-menu" aria-labelledby="dropdownSpec">
-                <div *ngFor="let spec of specs">
-                  <a class="dropdown-item pointer" (click)="specChange(spec.id)">{{ spec.name }}</a>
-                </div>
-              </div>
-            </div>
+          <div class="form-group">
+            <label class="text-white" for="owner">Nom - Prenom</label>
+            <input name="owner" type="text" class="form-control" id="owner" required ngModel>
           </div>
           <div class="form-group">
-            <label for="name">Nom - Prenom</label>
-            <input name="name" type="text" class="form-control" id="name" required ngModel>
-          </div>
-          <div class="form-group">
-            <label for="address">Chambre/Adresse</label>
-            <input name="address" type="text" class="form-control" id="address" required ngModel>
+            <label class="text-white" for="comment">Commentaire</label>
+            <input name="comment" type="text" class="form-control" id="comment" placeholder="Adresse, garniture, information..." required ngModel>
           </div>
           <div class="col-12 text-center">
-            <button class="btn btn-primary">Valider</button>
+            <button class="btn my-primary">Valider</button>
           </div>
         </form>
       </div>

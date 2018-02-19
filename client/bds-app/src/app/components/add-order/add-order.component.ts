@@ -65,7 +65,7 @@ export class AddOrderComponent implements OnInit {
         this.errorMessage = "quantity must be a number";
         return false;
 
-      } else if (order.quantity.length > 2) {
+      } else if (order.quantity.toString().length > 2) {
         this.errorMessage = "quantity too much";
         return false;
       }
@@ -76,7 +76,7 @@ export class AddOrderComponent implements OnInit {
       this.errorMessage = "name is require";
       return false;
 
-    } else  if (order.owner.length > 30) {
+    } else  if (order.owner.toString().length > 30) {
       this.errorMessage = "name too long";
       return false;
 
@@ -84,7 +84,7 @@ export class AddOrderComponent implements OnInit {
       this.errorMessage = "comment is require";
       return false;
 
-    } else if (order.comment.length > 130) {
+    } else if (order.comment.toString().length > 130) {
       this.errorMessage = "comment too long";
       return false;
     }

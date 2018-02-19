@@ -7,8 +7,6 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
 
-import { ApiService } from "./services/api.service";
-
 import { AppComponent } from './app.component';
 import { OrderComponent } from './order/order.component';
 
@@ -27,7 +25,7 @@ import { OrderComponent } from './order/order.component';
     AngularFireDatabaseModule,
     AngularFireAuthModule
   ],
-  providers: [ApiService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
