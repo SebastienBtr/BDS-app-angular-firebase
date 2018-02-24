@@ -6,11 +6,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyBQy9TbpeaZx55jHlTdewvOzaK3lF6MDls",
-    authDomain: "bds-app-2018.firebaseapp.com",
-    databaseURL: "https://bds-app-2018.firebaseio.com",
-    projectId: "bds-app-2018",
-    storageBucket: "bds-app-2018.appspot.com",
-    messagingSenderId: "742759873624"
+    apiKey: "AIzaSyA_buS-5gVDwV8vWWyg75d4iCIiPx7ZtM0",
+    authDomain: "acutality.firebaseapp.com",
+    databaseURL: "https://acutality.firebaseio.com",
+    projectId: "acutality",
+    storageBucket: "acutality.appspot.com",
+    messagingSenderId: "587709653042"
   }
 };

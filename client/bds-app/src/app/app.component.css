@@ -1,0 +1,11 @@
+@media screen and (max-width: 575px) {
+  .logout-right {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .logout-left {
+    display: none;
+  }
+}

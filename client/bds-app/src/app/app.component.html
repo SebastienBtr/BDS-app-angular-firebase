@@ -1,28 +1,42 @@
-<nav class="navbar navbar-expand-sm my-primary navbar-dark">
-  <a class="navbar-brand" href="#">Dur'as'ell</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="collapsibleNavbar">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="#" routerLink="/orders" routerLinkActive="active">Commandes</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" routerLink="/allos" routerLinkActive="active">Allos</a>
-      </li>
-      <!--<li class="nav-item">
-        <a class="nav-link" href="#" routerLink="/stats" routerLinkActive="active">Stats</a>
-      </li>-->
-    </ul>
-  </div>
-</nav>
+<div *ngIf="connected">
+  <nav class="navbar navbar-expand-sm my-primary navbar-dark">
+    <a class="navbar-brand" href="">Dur'as'ell</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#" routerLink="/orders" routerLinkActive="active">Commandes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" routerLink="/allos" routerLinkActive="active">Allos</a>
+        </li>
+        <li class="nav-item logout-left">
+          <a (click)="logout()" class="nav-link" href=""><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav navbar-nav navbar-right logout-right">
+      <a (click)="logout()" href="" class="navbar-brand"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </nav>
 
-<div class="content margin-top-30">
-  <div class="container-fluid">
+  <div class="content margin-top-30">
+    <div class="container-fluid">
 
-    <router-outlet></router-outlet>
+      <router-outlet></router-outlet>
 
+    </div>
   </div>
 </div>
+
+<div *ngIf="!connected">
+  <div class="content margin-top-30">
+    <div class="container-fluid">
+      <app-login></app-login>
+    </div>
+  </div>
+</div>
+
 

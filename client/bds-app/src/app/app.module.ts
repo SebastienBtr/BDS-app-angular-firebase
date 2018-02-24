@@ -13,6 +13,7 @@ import { OrdersComponent } from './components/orders/orders.component';
 import { AllosComponent } from './components/allos/allos.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AddOrderComponent } from './components/add-order/add-order.component';
+import { LoginComponent } from './components/login/login.component';
 
 
 
@@ -21,10 +22,7 @@ const appRoutes: Routes = [
   { path: 'orders', component: OrdersComponent },
   { path: 'add-order', component: AddOrderComponent },
   { path: 'allos',  component: AllosComponent },
-  { path: '',
-    redirectTo: '/orders',
-    pathMatch: 'full'
-  },
+  { path: '', component: AppComponent},
   { path: '**', component: PageNotFoundComponent }
 ];
 
@@ -34,7 +32,8 @@ const appRoutes: Routes = [
     OrdersComponent,
     AllosComponent,
     PageNotFoundComponent,
-    AddOrderComponent
+    AddOrderComponent,
+    LoginComponent
   ],
   imports: [
     RouterModule.forRoot(
