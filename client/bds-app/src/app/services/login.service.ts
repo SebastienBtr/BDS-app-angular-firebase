@@ -24,7 +24,7 @@ export class LoginService {
 
           let user = JSON.parse(JSON.stringify(value));
 
-          if (user != null && user.isAdmin) {
+          if (user[0] != null && user[0].isAdmin) {
             success()
 
           } else {
