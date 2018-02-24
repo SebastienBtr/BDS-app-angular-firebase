@@ -20,9 +20,11 @@ export class LoginService {
       .then(value => {
 
         this.db.list('Users/', ref => ref.orderByChild('email').equalTo(login))
-          .valueChanges().subscribe((user) => {
+          .valueChanges().subscribe((value) => {
 
-          if (user[0] != null && user[0].isAdmin) {
+          let user = JSON.parse(JSON.stringify(value));
+
+          if (user != null && user.isAdmin) {
             success()
 
           } else {
