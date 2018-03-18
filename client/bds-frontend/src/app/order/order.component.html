@@ -12,7 +12,15 @@
         <div class="col-md-3 col-6 margin-top-20" *ngFor="let allo of allos | async">
           <div (click)="chooseAllo(allo.key)" class="allo">
             <div class="content">
-              <img class="picture" src="assets/images/{{allo.image}}" alt="{{allo.name}} image">
+              <div *ngIf="allo.image.startsWith('http')">
+                  <img class="picture" src="{{allo.image}}" alt="{{allo.name}} image">
+              </div>
+              <div *ngIf="allo.image && !allo.image.startsWith('http')">
+                <img class="picture" src="assets/images/{{allo.image}}" alt="{{allo.name}} image">
+              </div>
+              <div *ngIf="!allo.image">
+                  <img class="picture" src="assets/images/storm.jpg" alt="{{allo.name}} image">
+              </div>
               <p class="titre"><strong>{{ allo.name }}</strong></p>
             </div>
           </div>
