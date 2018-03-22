@@ -1,10 +1,23 @@
 <nav class="navbar navbar-expand-sm my-primary navbar-dark">
-  <a class="navbar-brand" href="#">
-    <img src="assets/logo.png" alt="logo durasell" width="30px" height="37px" class="d-inline-block align-top">
-    Dur'as'ell
-  </a>
+  <a class="navbar-brand" href="">Dur'as'ell</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#" routerLink="/allo" routerLinkActive="active">Allos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" routerLink="/members" routerLinkActive="active">Membres</a>
+      </li>
+      <!-- <li class="nav-item">
+        <a class="nav-link" href="#" routerLink="/partners" routerLinkActive="active">Partenaires</a>
+      </li> -->
+    </ul>
+  </div>
 </nav>
 
-<app-order></app-order>
+<router-outlet></router-outlet>
 
 

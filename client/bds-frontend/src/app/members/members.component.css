@@ -1,0 +1,20 @@
+.picture {
+    width: 100%;
+    position: relative;
+  }
+
+.member {
+    box-shadow: 5px 5px 20px 2px rgba(0, 0, 0, 0.30);
+}
+
+.titre {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    background-color: #EF9FC6;
+}
+
+.color-white {
+    color:white;
+    margin-left: 20px;
+}

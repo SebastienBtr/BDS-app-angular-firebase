@@ -6,17 +6,38 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { OrderComponent } from './order/order.component';
+import { MembersComponent } from './members/members.component';
+import { PartnersComponent } from './partners/partners.component';
+
+const appRoutes: Routes = [
+  { path: 'allo', component: OrderComponent },
+  { path: 'members', component: MembersComponent },
+  { path: 'partners', component: PartnersComponent },
+  { path: '',
+    redirectTo: '/allo',
+    pathMatch: 'full'
+  },
+  { path: '**', component: OrderComponent }
+];
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    OrderComponent
+    OrderComponent,
+    MembersComponent,
+    PartnersComponent
   ],
   imports: [
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: false } // <-- debugging purposes only
+    ),
+    RouterModule.forRoot(appRoutes, { useHash: true }),  // .../#/crisis-center/
     BrowserModule,
     HttpClientModule,
     FormsModule,
