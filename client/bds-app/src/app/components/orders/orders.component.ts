@@ -58,6 +58,7 @@ export class OrdersComponent implements OnInit {
     } else {
       this.allSubscription = this.ordersService.getOrdersNotFinish().subscribe((data) => {
         this.orders = data
+        this.ordersService.changeDelivered();
       });
     }
 

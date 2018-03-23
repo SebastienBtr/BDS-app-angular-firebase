@@ -22,6 +22,25 @@ export class OrdersService {
       });
   }
 
+  changeDelivered() {
+    let list = this.db.list('Orders/', ref => ref.orderByChild('delivered').equalTo(false))
+    .snapshotChanges().map(changes => {
+      return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+    });
+
+    list.forEach(elements => {
+      elements.forEach(element => {
+        console.log(element.key);
+        this.db.object('Orders/' + element.key).update({ isDelivered: element.delivered})
+      });
+      //return this.db.object('Orders/' + element.key).update({ isDelivered: false})
+    });
+    // return this.db.list('Orders/', ref => ref.orderByChild('delivered').equalTo(false))
+    //   .snapshotChanges().map(changes => {
+    //     return changes.map(c => ({ key: c.payload.key, ...c.payload.val()}))
+    //   });
+  }
+
   getOrdersNotFinishForAlloId(alloName): Observable<any[]> {
     return this.db.list('Orders/', ref => ref.orderByChild('name').equalTo(alloName))
       .snapshotChanges().map(changes => {
@@ -30,6 +49,7 @@ export class OrdersService {
   }
 
   postRemoveOrder(id) {
+    this.db.object('Orders/' + id).update({ delivered: true})
     return this.db.object('Orders/' + id).update({ isDelivered: true})
   }
 

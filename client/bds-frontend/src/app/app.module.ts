@@ -12,16 +12,14 @@ import { AppComponent } from './app.component';
 import { OrderComponent } from './order/order.component';
 import { MembersComponent } from './members/members.component';
 import { PartnersComponent } from './partners/partners.component';
+import { HomeComponent } from './home/home.component';
 
 const appRoutes: Routes = [
   { path: 'allo', component: OrderComponent },
   { path: 'members', component: MembersComponent },
   { path: 'partners', component: PartnersComponent },
-  { path: '',
-    redirectTo: '/allo',
-    pathMatch: 'full'
-  },
-  { path: '**', component: OrderComponent }
+  { path: '', component: HomeComponent},
+  { path: '**', component: HomeComponent }
 ];
 
 
@@ -30,7 +28,8 @@ const appRoutes: Routes = [
     AppComponent,
     OrderComponent,
     MembersComponent,
-    PartnersComponent
+    PartnersComponent,
+    HomeComponent
   ],
   imports: [
     RouterModule.forRoot(

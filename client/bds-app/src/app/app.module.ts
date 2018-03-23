@@ -40,6 +40,7 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
     ),
+    RouterModule.forRoot(appRoutes, { useHash: true }),  // .../#/crisis-center/
     BrowserModule,
     HttpClientModule,
     FormsModule,
