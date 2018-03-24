@@ -1,5 +1,11 @@
 <div class="col-md-12 margin-top-30">
 
+  <div class="row color-white">
+    <div class="col-12">
+      <h2 class="color-white">ALLOS ACTIFS</h2>
+    </div>
+  </div>
+
   <div *ngIf="successMessage">
     <div class="alert alert-success" role="alert">
       {{successMessage}}
@@ -13,15 +19,17 @@
           <div (click)="chooseAllo(allo.key)" class="allo">
             <div class="content">
               <div *ngIf="allo.image && allo.image.startsWith('http')">
-                  <img class="picture" src="{{allo.image}}" alt="{{allo.name}} image">
+                <img class="picture" src="{{allo.image}}" alt="{{allo.name}} image">
               </div>
               <div *ngIf="allo.image && !allo.image.startsWith('http')">
                 <img class="picture" src="assets/images/{{allo.image}}" alt="{{allo.name}} image">
               </div>
               <div *ngIf="!allo.image">
-                  <img class="picture" src="assets/images/storm.jpg" alt="{{allo.name}} image">
+                <img class="picture" src="assets/images/storm.jpg" alt="{{allo.name}} image">
               </div>
-              <p class="titre"><strong>{{ allo.name }}</strong></p>
+              <p class="titre">
+                <strong>{{ allo.name }}</strong>
+              </p>
             </div>
           </div>
         </div>
@@ -31,7 +39,9 @@
     <ng-template #empty>
       <div class="row text-center text-white">
         <div class="col-12 margin-top-20">
-          <h3 class="text-muted"><i class="far fa-frown"></i></h3>
+          <h3 class="text-muted">
+            <i class="far fa-frown"></i>
+          </h3>
           <p class="text-muted">Aucun allo disponible pour le moment</p>
         </div>
       </div>
@@ -42,31 +52,33 @@
     <button (click)="backToSelection()" class="btn my-primary">
       <i class="fas fa-arrow-left"></i> Retour
     </button>
-    <br><br>
+    <br>
+    <br>
     <div class="col-sm-6 offset-sm-3 col-12">
-        <div *ngIf="errorMessage">
-          <div class="alert alert-danger" role="alert">
-            {{errorMessage}}
-          </div>
+      <div *ngIf="errorMessage">
+        <div class="alert alert-danger" role="alert">
+          {{errorMessage}}
         </div>
-        <form (ngSubmit)="register(orderForm.value)" #orderForm="ngForm">
-          <div *ngIf="currentAllo.isCountable === true" class="form-group">
-            <label class="text-white" for="quantity">Quantité</label>
-            <input name="quantity" type="number" class="form-control" id="quantity" required  ngModel>
-          </div>
-          <div class="form-group">
-            <label class="text-white" for="owner">Nom - Prenom</label>
-            <input name="owner" type="text" class="form-control" id="owner" required ngModel>
-          </div>
-          <div class="form-group">
-            <label class="text-white" for="comment">Commentaire</label>
-            <input name="comment" type="text" class="form-control" id="comment" placeholder="Adresse, garniture, information..." required ngModel>
-          </div>
-          <div class="col-12 text-center">
-            <button class="btn my-primary">Valider</button>
-          </div>
-        </form>
       </div>
+      <form (ngSubmit)="register(orderForm.value)" #orderForm="ngForm">
+        <div *ngIf="currentAllo.isCountable === true" class="form-group">
+          <label class="text-white" for="quantity">Quantité</label>
+          <input name="quantity" type="number" class="form-control" id="quantity" required ngModel>
+        </div>
+        <div class="form-group">
+          <label class="text-white" for="owner">Nom - Prenom</label>
+          <input name="owner" type="text" class="form-control" id="owner" required ngModel>
+        </div>
+        <div class="form-group">
+          <label class="text-white" for="comment">Commentaire</label>
+          <input name="comment" type="text" class="form-control" id="comment" placeholder="Adresse, garniture, information..." required
+            ngModel>
+        </div>
+        <div class="col-12 text-center">
+          <button class="btn my-primary">Valider</button>
+        </div>
+      </form>
+    </div>
 
   </ng-template>
 
